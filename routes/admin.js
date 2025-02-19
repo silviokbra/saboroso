@@ -8,9 +8,15 @@ router.get("/", function (req, res, next) {
 });
 
 router.get("/login", function (req, res, next) {
+    if (!req.session) {
+        return next(new Error("A sessão não está configurada corretamente!"));
+    }
 
-    res.render("admin/login")
+    if (!req.session.views) req.session.views = 0;
 
+    console.log(req.session.views++);
+
+    res.render("admin/login");
 });
 
 router.get("/contacts", function (req, res, next) {

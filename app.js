@@ -3,6 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const redis = require('redis');
+const session = require('express-session');
+let RedisStore = require('connect-redis')(session)
+var client = redis.createClient();
 
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
@@ -12,6 +16,37 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Criando o cliente Redis
+
+// Criando o cliente Redis
+const redisClient = redis.createClient({
+  socket: {
+    host: '127.0.0.1', // Força IPv4 ao invés de ::1
+    port: 6379
+  }
+});
+
+// Captura erros do Redis
+redisClient.on('error', (err) => console.log('Erro no Redis:', err));
+
+// Garante que o Redis está conectado antes de passar para a sessão
+redisClient.connect().then(() => {
+  console.log('Redis conectado com sucesso!');
+
+  // Configuração da sessão com RedisStore
+  app.use(session({
+    store: new RedisStore({ client: redisClient }),
+    secret: 'p@ssw0rd',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // true apenas se estiver em produção com HTTPS
+  }));
+}).catch(console.error);
+
 
 app.use(logger('dev'));
 app.use(express.json());
