@@ -26,6 +26,7 @@ app.use(function (req, res, next) {
 
     form.parse(req, function (err, fields, files) {
 
+      req.body = fields;
       req.fields = fields;
       req.files = files;
 
@@ -44,7 +45,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.urlencoded({ extended: true }));
 
 // Criando o cliente Redis
 const redisClient = redis.createClient({
