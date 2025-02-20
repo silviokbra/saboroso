@@ -7,11 +7,37 @@ const redis = require('redis');
 const session = require('express-session');
 let RedisStore = require('connect-redis')(session)
 var client = redis.createClient();
+var formidable = require('formidable');
+var path = require('path');
 
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
 
 var app = express();
+
+app.use(function (req, res, next) {
+
+  if ((req.method === 'POST') && (req.path != '/admin/login')) {
+
+    var form = formidable.IncomingForm({
+      uploadDir: path.join(__dirname, "/public/images"),
+      keepExtensions: true
+    });
+
+    form.parse(req, function (err, fields, files) {
+
+      req.fields = fields;
+      req.files = files;
+
+      next();
+
+    });
+  } else {
+
+    next();
+  }
+
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
