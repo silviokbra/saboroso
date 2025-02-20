@@ -100,10 +100,16 @@ router.get("/menus", function (req, res, next) {
 
         res.render("admin/menus", admin.getParams(req, {
             data
-    
+
         }));
 
     });
+
+});
+
+router.post("/menus", function (req, res, next) {
+
+    res.send(req.body);
 
 });
 
