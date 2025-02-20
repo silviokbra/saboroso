@@ -99,7 +99,7 @@
   <div class="modal fade" id="modal-create">
     <div class="modal-dialog">
       <div class="modal-content" style="border-top: 3px solid #00a65a;">
-        <form method="post">
+        <form method="post" action="/admin/reservations">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -149,7 +149,7 @@
   <div class="modal fade" id="modal-update">
     <div class="modal-dialog">
       <div class="modal-content" style="border-top: 3px solid #00c0ef;">
-        <form method="post">
+        <form method="post" action="/admin/reservations">
           <input type="hidden" name="id">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -198,3 +198,33 @@
   </div>
 
   <%- include("inc/footer") -%>
+
+    <script src="/js/hcode-formsave.js"></script>
+    <script>
+
+      let formCreate = document.querySelector("#modal-create form");
+
+      formCreate.save().then(json => {
+
+        window.location.reload();
+
+      }).catch(err => {
+
+        console.log(err);
+
+      });
+
+
+      let formUpdate = document.querySelector("#modal-update form");
+
+      formUpdate.save().then(json => {
+
+        window.location.reload();
+
+      }).catch(err => {
+
+        console.log(err);
+
+      });
+
+    </script>
