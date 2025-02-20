@@ -21,8 +21,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Criando o cliente Redis
-
-// Criando o cliente Redis
 const redisClient = redis.createClient({
   socket: {
     host: '127.0.0.1', // Força IPv4 ao invés de ::1
@@ -38,15 +36,18 @@ redisClient.connect().then(() => {
   console.log('Redis conectado com sucesso!');
 
   // Configuração da sessão com RedisStore
-  app.use(session({
-    store: new RedisStore({ client: redisClient }),
-    secret: 'p@ssw0rd',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false } // true apenas se estiver em produção com HTTPS
-  }));
+
+
+
 }).catch(console.error);
 
+app.use(session({
+  // store: new RedisStore({ client: redisClient }),
+  secret: 'p@ssw0rd',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // true apenas se estiver em produção com HTTPS
+}));
 
 app.use(logger('dev'));
 app.use(express.json());

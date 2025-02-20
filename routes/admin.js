@@ -8,6 +8,8 @@ router.get("/", function (req, res, next) {
 });
 
 router.get("/login", function (req, res, next) {
+    console.log("Sessão ativa:");
+
     if (!req.session) {
         return next(new Error("A sessão não está configurada corretamente!"));
     }
@@ -15,6 +17,7 @@ router.get("/login", function (req, res, next) {
     if (!req.session.views) req.session.views = 0;
 
     console.log(req.session.views++);
+    console.log("Antes de renderizar login");
 
     res.render("admin/login");
 });
