@@ -44,7 +44,7 @@ module.exports = {
                         email = ?,
                         people = ?,
                         date = ?,
-                        time = ?,
+                        time = ?
                     WHERE id = ?
                 `;
 
