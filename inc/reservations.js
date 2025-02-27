@@ -1,5 +1,6 @@
 var conn = require('./db');
 var Pagination = require("./../inc/Pagination");
+var moment = require("moment");
 
 module.exports = {
 
@@ -78,37 +79,37 @@ module.exports = {
 
     getReservations(req) {
 
-        return new Promise ((resolve, reject)=>{
+        return new Promise((resolve, reject) => {
 
             let page = req.query.page;
             let dtstart = req.query.start;
             let dtend = req.query.end;
-       
-        if (!page) page = 1;
 
-        let params = [];
+            if (!page) page = 1;
 
-        if (dtstart && dtend) params.push(dtstart, dtend);
+            let params = [];
 
-        let pag = new Pagination(
-            `
+            if (dtstart && dtend) params.push(dtstart, dtend);
+
+            let pag = new Pagination(
+                `
                 SELECT SQL_CALC_FOUND_ROWS *                 
                 FROM tb_reservations 
-                ${(dtstart && dtend) ? 'WHERE date BETWEEN ? AND ?' :''}
+                ${(dtstart && dtend) ? 'WHERE date BETWEEN ? AND ?' : ''}
                 ORDER BY name LIMIT ?, ?
                 `,
-               params
-        );
+                params
+            );
 
-         pag.getPage(page).then(data=> {
+            pag.getPage(page).then(data => {
 
-            resolve({
-                data,
-                links: pag.getNavigation(req.query)
-            })
+                resolve({
+                    data,
+                    links: pag.getNavigation(req.query)
+                })
 
-         });
-    });
+            });
+        });
 
     },
 
@@ -126,6 +127,54 @@ module.exports = {
                     reject(err);
                 } else {
                     resolve(results);
+                }
+
+            })
+
+        })
+
+    },
+
+    chart(req) {
+
+        return new Promise((resolve, reject) => {
+
+            conn.query(`
+
+   SELECT
+            CONCAT(YEAR(date), '-', MONTH(date)) AS date,
+            COUNT(*) AS total,
+            SUM(people) / COUNT(*) AS avg_people
+        FROM tb_reservations
+        WHERE
+            date BETWEEN ? AND ?
+        GROUP BY CONCAT(YEAR(date), '-' ,MONTH(date))
+        ORDER BY date DESC
+                    
+                `, [
+
+                req.query.start,
+                req.query.end
+
+            ], (err, results) => {
+
+                if (err) {
+                    reject(err);
+                } else {
+
+                    let months = [];
+                    let values = [];
+
+                    results.forEach(row => {
+
+                        months.push(moment(row.date).format('MMM YYYY'));
+                        values.push(row.total);
+                    });
+
+                    resolve({
+                        months,
+                        values
+                    })
                 }
 
             })
