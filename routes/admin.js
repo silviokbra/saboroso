@@ -124,16 +124,16 @@ router.get("/emails", function (req, res, next) {
 
 });
 
-router.delete("/emails/:id", function(req, res, next){
+router.delete("/emails/:id", function (req, res, next) {
 
-    emails.delete(req.params.id).then(results=>{
+    emails.delete(req.params.id).then(results => {
 
         res.send(results);
 
-    }).catch(err=>{
+    }).catch(err => {
 
         res.send(err);
-        
+
     })
 })
 
