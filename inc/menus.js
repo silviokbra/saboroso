@@ -82,23 +82,23 @@ module.exports = {
 
     },
 
-    delete(id){
+    delete(id) {
 
-        return new Promise ((resolve, reject)=>{
+        return new Promise((resolve, reject) => {
 
             conn.query(`
                 DELETE FROM tb_menus WHERE id = ?
                 `, [
-                    id
-                ], (err, results)=>{
+                id
+            ], (err, results) => {
 
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(results);
-                    }
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
 
-                })
+            })
 
 
         })
