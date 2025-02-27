@@ -8,12 +8,23 @@ const session = require('express-session');
 let RedisStore = require('connect-redis')(session)
 var client = redis.createClient();
 var formidable = require('formidable');
+var http = require('http');
+var socket = require('socket.io');
 var path = require('path');
 
-var indexRouter = require('./routes/index');
-var adminRouter = require('./routes/admin');
-
 var app = express();
+
+var http = http.Server(app);
+var io = socket(http);
+
+io.on('connection', function (socket) {
+
+  console.log('Novo usuario conectado');
+
+});
+
+var indexRouter = require('./routes/index')(io);
+var adminRouter = require('./routes/admin')(io);
 
 app.use(function (req, res, next) {
 
@@ -104,4 +115,9 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+http.listen(3000, function () {
+
+  console.log('servidor em execução');
+
+});
+

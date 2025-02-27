@@ -183,6 +183,30 @@ module.exports = {
         })
 
 
+    },
+
+    dashboard() {
+
+        return new Promise((resolve, reject) => {
+
+            conn.query(`
+                        SELECT
+                        (SELECT COUNT (*) from tb_contacts) AS nrcontacts,
+                        (SELECT COUNT (*) from tb_menus) AS nrmenus,
+                        (SELECT COUNT (*) from tb_reservations) AS nrreservations,
+                        (SELECT COUNT (*) from tb_users) AS nrusers;       
+                    `, (err, results) => {
+
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results[0]);
+                }
+
+            })
+
+        })
+
     }
 
 }
